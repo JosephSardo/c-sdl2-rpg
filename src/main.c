@@ -1,39 +1,18 @@
-#include <SDL2/SDL.h>
-#include <stdio.h>
+#include "game.h"
 
-int main(int argc, char* argv[]) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
+int main(void)
+{
+    if (!game_init())
         return 1;
-    }
 
-    SDL_Window* window = SDL_CreateWindow(
-        "SDL2 RPG",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
-        SDL_WINDOW_SHOWN
-    );
-
-    if (!window) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    int running = 1;
-    SDL_Event event;
+    bool running = true;
 
     while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = 0;
-            }
-        }
+        game_handle_events(&running);
+        game_update();
+        game_render();
     }
 
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    game_cleanup();
     return 0;
 }
